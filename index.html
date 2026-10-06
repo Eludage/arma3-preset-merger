@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Extract your client-side mods from an Arma 3 Launcher preset and apply them to a new base modpack." />
+    <title>Arma 3 Preset Merger</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3' fill='%23d18f21'/><path d='M4 4h8M4 8h8M4 12h5' stroke='%23111' stroke-width='2'/></svg>" />
+  </head>
+  <body>
+    <header class="page-header">
+      <h1>Arma 3 Preset Merger</h1>
+      <p class="lead">
+        Your group updates its base modpack, and you have to add all your client-side mods again.
+        Upload your presets here to pull out your client-side mods and put them on top of the new base modpack.
+      </p>
+      <p class="privacy">Everything runs in your browser. Your files are never uploaded anywhere.</p>
+    </header>
+
+    <main>
+      <section class="step" aria-labelledby="step1-title">
+        <h2 id="step1-title"><span class="step-number">1</span> Find your client-side mods</h2>
+        <p class="hint">
+          Export both presets from the Arma 3 Launcher (MODS &rarr; PRESET &rarr; select preset &rarr; EXPORT).
+          If your preset already contains only your client-side mods, leave the base modpack empty.
+        </p>
+        <div class="drop-grid">
+          <label class="drop-zone" data-slot="oldBase">
+            <input type="file" accept=".html,text/html" hidden />
+            <span class="drop-title">Base modpack</span>
+            <span class="drop-sub">The base preset your own preset was built on</span>
+            <span class="drop-file">Drop file or click to choose</span>
+          </label>
+          <label class="drop-zone" data-slot="player">
+            <input type="file" accept=".html,text/html" hidden />
+            <span class="drop-title">Your preset</span>
+            <span class="drop-sub">Base modpack plus your client-side mods</span>
+            <span class="drop-file">Drop file or click to choose</span>
+          </label>
+        </div>
+        <div id="step1-result" class="result" hidden></div>
+      </section>
+
+      <section class="step" aria-labelledby="step2-title">
+        <h2 id="step2-title"><span class="step-number">2</span> Apply them to a new base modpack</h2>
+        <p class="hint">Upload the new base modpack to get a preset with the new base plus your client-side mods.</p>
+        <div class="drop-grid single">
+          <label class="drop-zone" data-slot="newBase">
+            <input type="file" accept=".html,text/html" hidden />
+            <span class="drop-title">New base modpack</span>
+            <span class="drop-sub">The updated preset from your group</span>
+            <span class="drop-file">Drop file or click to choose</span>
+          </label>
+        </div>
+        <div id="step2-result" class="result" hidden></div>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <a href="https://github.com/Eludage/arma3-preset-merger">Source on GitHub</a>
+      <span>Not affiliated with Bohemia Interactive.</span>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
