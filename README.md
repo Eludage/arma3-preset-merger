@@ -32,8 +32,9 @@ collection. The available collections are configured in
 
 Steam's API cannot be called from the browser (no CORS), so
 [`scripts/update-collections.mjs`](scripts/update-collections.mjs) downloads the collections at
-build time into `public/collections/`. The site is rebuilt daily, so changes to a collection show
-up within a day.
+build time into `public/collections/`. The site is rebuilt weekly, so changes to a collection show
+up within a week; run the deploy workflow manually to pick them up sooner. When a collection has
+changed, the workflow also commits the new snapshot to the repository.
 
 ### What the tool takes care of
 

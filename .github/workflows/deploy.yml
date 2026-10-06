@@ -4,14 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  # Daily rebuild to pick up changes to the Steam Workshop collections.
+  # Weekly rebuild (Mondays) to pick up changes to the Steam Workshop collections.
   schedule:
-    - cron: "17 4 * * *"
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    - cron: "17 4 * * 1"
 
 concurrency:
   group: pages
@@ -20,6 +15,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      # Needed to commit updated collection snapshots back to the repository.
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,6 +28,28 @@ jobs:
       - run: npm test
       - name: Update Steam Workshop collections (keeps the committed snapshot if Steam is unreachable)
         run: npm run update-collections -- --keep-on-error
+      # Commits a snapshot only if its content changed; the updatedAt timestamp alone does not count.
+      # Pushes made with GITHUB_TOKEN do not trigger another workflow run.
+      - name: Commit changed collection snapshots
+        if: github.ref == 'refs/heads/main'
+        run: |
+          changed=false
+          for file in public/collections/*.json; do
+            if git cat-file -e "HEAD:$file" 2>/dev/null &&
+              diff -q <(git show "HEAD:$file" | jq -S 'del(.updatedAt)') <(jq -S 'del(.updatedAt)' "$file") >/dev/null; then
+              continue
+            fi
+            git add "$file"
+            changed=true
+          done
+          if [ "$changed" = true ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Update Steam Workshop collection snapshots"
+            git push || echo "::warning::Could not push the updated collection snapshots; the site is deployed anyway."
+          else
+            echo "Collection snapshots unchanged."
+          fi
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -38,6 +58,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
