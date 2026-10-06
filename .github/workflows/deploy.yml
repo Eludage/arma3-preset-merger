@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Daily rebuild to pick up changes to the Steam Workshop collections.
+  schedule:
+    - cron: "17 4 * * *"
 
 permissions:
   contents: read
@@ -25,6 +28,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - name: Update Steam Workshop collections (keeps the committed snapshot if Steam is unreachable)
+        run: npm run update-collections -- --keep-on-error
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:

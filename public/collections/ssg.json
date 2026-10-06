@@ -1,0 +1,117 @@
+{
+  "id": "ssg",
+  "label": "SSG client-side mods",
+  "collectionId": "3594915790",
+  "title": "SSG Client-Side Whitelist",
+  "updatedAt": "2026-10-06T19:08:44.840Z",
+  "items": [
+    {
+      "id": "2041057379",
+      "name": "A3 Thermal Improvement"
+    },
+    {
+      "id": "1376867375",
+      "name": "ACE Interaction Menu Expansion"
+    },
+    {
+      "id": "2791403093",
+      "name": "Better Inventory"
+    },
+    {
+      "id": "1364777346",
+      "name": "BHC Map Contour"
+    },
+    {
+      "id": "2190826124",
+      "name": "Bullets_Hit"
+    },
+    {
+      "id": "897295039",
+      "name": "Client's FPS, Displayed for Zeus"
+    },
+    {
+      "id": "2480263219",
+      "name": "Enhanced GPS"
+    },
+    {
+      "id": "2467590475",
+      "name": "Enhanced Map Ace Version"
+    },
+    {
+      "id": "2513044572",
+      "name": "Fawks' Enhanced NVGs"
+    },
+    {
+      "id": "2140288272",
+      "name": "LALA_UAV_ENHANCED"
+    },
+    {
+      "id": "929396506",
+      "name": "MRB Air Visibility"
+    },
+    {
+      "id": "930903722",
+      "name": "MRB Vehicle Visibility"
+    },
+    {
+      "id": "1845100804",
+      "name": "MRB Sea Vessel Visibility"
+    },
+    {
+      "id": "2153127400",
+      "name": "Ride Where You Look"
+    },
+    {
+      "id": "1623498241",
+      "name": "Turret Enhanced"
+    },
+    {
+      "id": "642912021",
+      "name": "ZEC - Zeus and Eden Templates / Building Compositions"
+    },
+    {
+      "id": "1251859358",
+      "name": "ZEI - Zeus and Eden Interiors"
+    },
+    {
+      "id": "2387297579",
+      "name": "Zeus Additions"
+    },
+    {
+      "id": "3346384116",
+      "name": "HMDs Mod but not broken"
+    },
+    {
+      "id": "2257686620",
+      "name": "Blastcore Murr Edition"
+    },
+    {
+      "id": "3407948300",
+      "name": "JSRS SOUNDMOD 2025"
+    },
+    {
+      "id": "825179978",
+      "name": "Enhanced Soundscape"
+    },
+    {
+      "id": "3023395342",
+      "name": "3DEN Attributes Fast Load"
+    },
+    {
+      "id": "3032131959",
+      "name": "MapTools Remastered"
+    },
+    {
+      "id": "3665466082",
+      "name": "Zeus Jukebox"
+    },
+    {
+      "id": "3670432637",
+      "name": "Acre Radio Manager"
+    },
+    {
+      "id": "3791716761",
+      "name": "ACE3 Arsenal Extended - Attachments"
+    }
+  ]
+}

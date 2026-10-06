@@ -1,5 +1,13 @@
 import "./style.css";
 import {
+  collections,
+  collectionUrl,
+  loadCollection,
+  modsNotInCollection,
+  type CollectionConfig,
+  type CollectionSnapshot,
+} from "./collections";
+import {
   extractClientMods,
   mergePresets,
   modKey,
@@ -23,9 +31,15 @@ interface SavedClientMods extends ClientMods {
 }
 
 const STORAGE_KEY = "arma3-preset-merger:client-mods";
+const CHECKS_STORAGE_KEY = "arma3-preset-merger:collection-checks";
 
 const presets: Partial<Record<Slot, Preset>> = {};
 let saved = loadSaved();
+
+/** IDs of the collections the client-side mods are checked against. */
+const enabledChecks = loadEnabledChecks();
+const loadedCollections = new Map<string, CollectionSnapshot | Error>();
+const pendingCollections = new Set<string>();
 
 const step1 = document.getElementById("step1-result")!;
 const step2 = document.getElementById("step2-result")!;
@@ -131,6 +145,77 @@ function forgetSaved(): void {
   }
 }
 
+function loadEnabledChecks(): Set<string> {
+  try {
+    const ids = JSON.parse(localStorage.getItem(CHECKS_STORAGE_KEY) ?? "[]") as string[];
+    return new Set(ids.filter((id) => collections.some((c) => c.id === id)));
+  } catch {
+    return new Set();
+  }
+}
+
+function saveEnabledChecks(): void {
+  try {
+    localStorage.setItem(CHECKS_STORAGE_KEY, JSON.stringify([...enabledChecks]));
+  } catch {
+    // Ignore, see save().
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Collection checks
+
+function collectionChecks(mods: Mod[]): HTMLElement {
+  const container = h("div", { class: "checks" });
+  for (const collection of collections) {
+    const toggle = h("input", { type: "checkbox", role: "switch" });
+    toggle.checked = enabledChecks.has(collection.id);
+    toggle.addEventListener("change", () => {
+      if (toggle.checked) enabledChecks.add(collection.id);
+      else enabledChecks.delete(collection.id);
+      saveEnabledChecks();
+      render();
+    });
+    container.append(h("label", { class: "switch" }, toggle, h("span", {}, `Check against ${collection.label}`)));
+    if (toggle.checked) container.append(collectionCheckResult(collection, mods));
+  }
+  return container;
+}
+
+function collectionCheckResult(collection: CollectionConfig, mods: Mod[]): HTMLElement {
+  const loaded = loadedCollections.get(collection.id);
+  if (!loaded) {
+    if (!pendingCollections.has(collection.id)) {
+      pendingCollections.add(collection.id);
+      void loadCollection(collection.id)
+        .catch((err: unknown) => (err instanceof Error ? err : new Error(String(err))))
+        .then((result) => {
+          pendingCollections.delete(collection.id);
+          loadedCollections.set(collection.id, result);
+          render();
+        });
+    }
+    return h("p", { class: "note subtle" }, "Loading collection…");
+  }
+  if (loaded instanceof Error) {
+    return h("div", { class: "callout warning" }, h("p", {}, loaded.message));
+  }
+
+  const link = h("a", { href: collectionUrl(collection), target: "_blank", rel: "noopener" }, loaded.title || collection.label);
+  const source = h("p", { class: "source" }, "Steam collection ", link, ` (${loaded.items.length} mods, as of ${formatDate(loaded.updatedAt)})`);
+  const outside = modsNotInCollection(mods, loaded);
+  if (!outside.length) {
+    return h("div", { class: "callout ok" }, h("p", {}, "All your client-side mods are in the collection."), source);
+  }
+  return h(
+    "div",
+    { class: "callout warning" },
+    h("p", {}, `${outside.length} of your client-side mod(s) are not in the collection:`),
+    modList(outside),
+    source,
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Rendering
 
@@ -181,6 +266,9 @@ function renderStep1(current: ReturnType<typeof currentClientMods>): void {
   }
   if (client.dlcs.length) {
     step1.append(h("h3", {}, `Additional DLCs (${client.dlcs.length})`), dlcList(client.dlcs));
+  }
+  if (client.mods.length && collections.length) {
+    step1.append(collectionChecks(client.mods));
   }
   if (!fromStorage) {
     step1.append(h("p", { class: "note subtle" }, "Saved in this browser, so next time you only need the new base modpack."));

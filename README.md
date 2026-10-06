@@ -23,6 +23,18 @@ only need to upload the new base modpack.
 If you already have a preset that contains only your client-side mods, upload it as "Your preset"
 and leave "Base modpack" empty.
 
+### Checking against a Steam Workshop collection
+
+Some groups publish their allowed client-side mods as a Steam Workshop collection. Turn on
+**Check against …** below your client-side mods to list every mod that is not part of the
+collection. The available collections are configured in
+[`collections.config.json`](collections.config.json); pull requests for other groups are welcome.
+
+Steam's API cannot be called from the browser (no CORS), so
+[`scripts/update-collections.mjs`](scripts/update-collections.mjs) downloads the collections at
+build time into `public/collections/`. The site is rebuilt daily, so changes to a collection show
+up within a day.
+
 ### What the tool takes care of
 
 - Mods are matched by their Steam Workshop ID, so renamed mods are still recognized.
@@ -44,6 +56,7 @@ npm install
 npm run dev      # start the dev server
 npm test         # run the unit tests
 npm run build    # build the static site into dist/
+npm run update-collections   # refresh the Steam Workshop collection snapshots
 ```
 
 The core logic (parsing, diffing, merging and writing presets) lives in

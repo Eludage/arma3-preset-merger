@@ -10,7 +10,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "update-collections": "node scripts/update-collections.mjs"
   },
   "devDependencies": {
     "@types/node": "^26.6.4",
